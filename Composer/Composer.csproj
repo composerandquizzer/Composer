@@ -23,6 +23,7 @@
     </UnoFeatures>
     <WasmShellIndexHtmlPath>Platforms\WebAssembly\wwwroot\index.html</WasmShellIndexHtmlPath>
     <WasmShellMonoRuntimeExecutionMode Condition="'$(Configuration)'=='Release'">InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+    <WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
     
   </PropertyGroup>
 
