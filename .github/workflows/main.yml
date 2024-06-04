@@ -1,0 +1,49 @@
+name: Composer
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]   
+  workflow_dispatch:  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    env:
+      config: 'Release'
+      framework: 'net8.0-browserwasm'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore Dependencies
+      run: dotnet restore ./Composer/Composer.csproj
+    - name: Build 
+      run: dotnet build ./Composer/Composer.csproj --no-restore -f $framework -c $config -p:WasmShellWebAppBasePath=./
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v4
+      if: github.event_name == 'workflow_dispatch' # Only deploy if Workflow manually ran
+      with:
+        name: pages
+        path: ./Composer/bin/${{env.config}}/${{env.framework}}/dist/        
+  deploy:
+    needs: build 
+    runs-on: ubuntu-latest
+    name: Deploy
+    if: github.event_name == 'workflow_dispatch' # Only deploy if Workflow manually ran
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: pages
+        path: dist        
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v4
+      with:
+        target_branch: gh-pages
+        build_dir: ./dist/
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
