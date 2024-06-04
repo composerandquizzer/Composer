@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Composer", "Composer\Composer.csproj", "{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E061D0E9-5C0C-4B61-B878-7C728C091912}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D0FEC4A-79FA-4399-9ED5-BBC58329165D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {389E1699-780E-40D2-86CC-BBFBAC87C105}
+	EndGlobalSection
+EndGlobal

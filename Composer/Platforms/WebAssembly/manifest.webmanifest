@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Composer",
+  "display": "standalone",
+  "name": "Composer",
+  "short_name": "Composer",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

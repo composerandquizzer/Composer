@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Sofia&family=Slabo+27px&family=Roboto&family=Inconsolata&family=Ubuntu&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js"></script>
+
+    <script type="text/javascript" src="./require.js"></script>
+    <script type="module" src="./uno-bootstrap.js"></script>
+
+    <!-- Style -->
+    $(ADDITIONAL_CSS)
+    $(ADDITIONAL_HEAD)
+</head>
+<body>
+    <div id="uno-body" class="container-fluid uno-body">
+        <div class="uno-loader"
+             loading-position="bottom"
+             loading-alert="none">
+
+            <!-- Logo: change src to customize the logo -->
+            <img class="logo"
+                 src=""
+                 title="Please wait ..." />
+
+            <progress></progress>
+            <span class="alert"></span>
+        </div>
+    </div>
+
+
+    <script type="module">
+
+        import { ImageActions } from 'https://cdn.jsdelivr.net/npm/@xeger/quill-image-actions/lib/index.mjs';
+        import { ImageFormats } from 'https://cdn.jsdelivr.net/npm/@xeger/quill-image-formats/lib/index.mjs';
+
+        Quill.register('modules/imageActions', ImageActions);
+        Quill.register('modules/imageFormats', ImageFormats);
+
+        var quill;
+        var formats = { font: "", size: "" };
+        var honorific = 'ﷺ';
+
+        export function InitializeQuill() {
+            try {
+
+                const FontAttributor = Quill.import('formats/font');
+                FontAttributor.whitelist = [
+                    'sofia',
+                    'slabo',
+                    'roboto',
+                    'inconsolata',
+                    'ubuntu',
+                    'times-new-roman', 'tahoma', 'calibri', 'scheherazade-new'
+                ];
+                Quill.register(FontAttributor, true);
+
+                var Size = Quill.import('attributors/style/size');
+                Size.whitelist = ['12px', '14px', '16px', '18px', '20px', '24px', '36px', '48px', '72px'];
+                Quill.register(Size, true);
+
+
+
+                const toolbarOptions = [
+
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'formula'],
+
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'header': [1, 2, 3, false] }],
+                    [{ 'size': ['12px', '14px', '16px', '18px', '20px', '24px', '36px', '48px', '72px'] }],  // custom dropdown
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': ['sofia', 'slabo', 'roboto', 'inconsolata', 'ubuntu', 'times-new-roman', 'tahoma', 'calibri'] }],  // Add your fonts here
+                    [{ 'align': [] }],
+                ];
+
+
+
+                // Initialize Quill
+                quill = new Quill('#editor', {
+                    formats: ['align', 'background', 'blockquote', 'bold', 'code-block', 'color', 'float', 'font', 'header', 'height', 'image', 'italic', 'link', 'script', 'strike', 'size', 'underline', 'width'],
+
+                    modules: {
+                        imageActions: {},
+                        imageFormats: {},
+                        toolbar: toolbarOptions
+                    },
+                    placeholder: 'Write here...',
+                    theme: 'snow'
+                });
+
+
+                // Custom CSS to apply the fonts
+
+                const sizeStyles = `
+          .ql-size-12px { font-size: 12px; }
+          .ql-size-14px { font-size: 14px; }
+          .ql-size-16px { font-size: 16px; }
+          .ql-size-18px { font-size: 18px; }
+          .ql-size-20px { font-size: 20px; }
+          .ql-size-24px { font-size: 24px; }
+          .ql-size-36px { font-size: 36px; }
+          .ql-size-48px { font-size: 48px; }
+          .ql-size-72px { font-size: 72px; }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
+            content: '12px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
+            content: '14px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+            content: '16px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
+            content: '18px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
+            content: '20px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
+            content: '24px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before {
+            content: '36px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before {
+            content: '48px';
+            font-size: 14px;
+          }
+
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="72px"]::before,
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="72px"]::before {
+            content: '72px';
+            font-size: 14px;
+          }
+`;
+
+                const styleSheet = document.createElement("style");
+                styleSheet.type = "text/css";
+                styleSheet.innerText = sizeStyles;
+                document.head.appendChild(styleSheet);
+
+
+                const fontStyles = `
+          .ql-font-sofia { font-family: 'Sofia', cursive; }
+          .ql-font-slabo { font-family: 'Slabo 27px', serif; }
+          .ql-font-roboto { font-family: 'Roboto', sans-serif; }
+          .ql-font-inconsolata { font-family: 'Inconsolata', monospace; }
+          .ql-font-ubuntu { font-family: 'Ubuntu', sans-serif; }
+          .ql-font-times-new-roman { font-family: 'Times New Roman', Times, serif; }
+          .ql-font-tahoma { font-family: 'Tahoma', Geneva, sans-serif; }
+          .ql-font-calibri { font-family: 'Calibri', Candara, sans-serif; }
+          .ql-font-scheherazade-new { font-family: 'Scheherazade New', serif; }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=sofia]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=sofia]::before {
+            content: 'Sofia';
+            font-family: 'Sofia', cursive;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=slabo]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=slabo]::before {
+            content: 'Slabo';
+            font-family: 'Slabo 27px', serif;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=roboto]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=roboto]::before {
+            content: 'Roboto';
+            font-family: 'Roboto', sans-serif;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=inconsolata]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=inconsolata]::before {
+            content: 'Inconsolata';
+            font-family: 'Inconsolata', monospace;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=ubuntu]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=ubuntu]::before {
+            content: 'Ubuntu';
+            font-family: 'Ubuntu', sans-serif;
+          }
+
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=times-new-roman]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=times-new-roman]::before {
+            content: 'Times N Roman';
+            font-family: 'Times New Roman', Times, serif;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=tahoma]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=tahoma]::before {
+            content: 'Tahoma';
+            font-family: 'Tahoma', Geneva, sans-serif;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=calibri]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=calibri]::before {
+            content: 'Calibri';
+            font-family: 'Calibri', Candara, sans-serif;
+          }
+
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value=scheherazade-new]::before,
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=scheherazade-new]::before {
+          content: 'Schrzade N';
+          font-family: 'Scheherazade New', serif;
+        }
+`;
+
+                const styleSheet2 = document.createElement("style");
+                styleSheet2.type = "text/css";
+                styleSheet2.innerText = fontStyles;
+                document.head.appendChild(styleSheet2);
+
+                var keyboard = quill.getModule('keyboard');
+                keyboard.bindings['Enter'] = null;
+                keyboard.bindings['13'] = null;
+
+
+            } catch (error) {
+                console.error("Error", error);
+            }
+
+            // Set default font and font size
+            quill.format('font', 'calibri');
+            quill.format('size', '14px');
+            formats.font = 'calibri';
+            formats.size = '14px';
+
+            // Wait for the next tick to ensure Quill is fully initialized
+            setTimeout(function () {
+                // Programmatically set the default selected options in the dropdowns
+                document.querySelector('.ql-font .ql-picker-label').dataset.value = 'calibri';
+
+                document.querySelector('.ql-font .ql-picker-item[data-value="calibri"]').classList.add('ql-selected');
+
+                document.querySelector('.ql-size .ql-picker-label').dataset.value = '14px';
+
+                document.querySelector('.ql-size .ql-picker-item[data-value="14px"]').classList.add('ql-selected');
+            }, 0);
+
+            // Add custom CSS for the dropdown using JavaScript
+            var styledropdown = document.createElement('style');
+            styledropdown.textContent = `
+            .ql-custom-dropdown {
+                padding: 2px 28px 2px 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #fff;
+                font-size: 12px;
+                color: #333;
+                outline: none;
+                cursor: pointer;
+                appearance: none;
+                background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 10 13 14 9"%3E%3C/polyline%3E%3C/svg%3E');
+                background-repeat: no-repeat;
+                background-position: right 3px center; /* Adjusting position of the arrow */
+            }
+
+            .ql-custom-dropdown:hover {
+                border-color: #aaa;
+            }
+
+            .ql-custom-dropdown:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+.ql-custom-text {
+    cursor: pointer;
+    margin-left: 10px; /* Add a small gap from the dropdown */
+    font-size: 14px; /* Set font size to 14px */
+
+}
+
+.ql-custom-text:hover {
+    color: #007bff; /* Change text color to blue on hover */
+    text-decoration: underline;
+}
+        `;
+            document.head.appendChild(styledropdown);
+
+            // Create the custom dropdown
+            var select = document.createElement('select');
+            select.classList.add('ql-custom-dropdown');
+            var options = ['SALLALLAHU ALAIHIWASALLAM', 'JALLAJALALOUHOU', 'SUBHAANAHU WA TAAALAA', 'AZZA WA JALL', 'TABAARAKA WA-TAAALAA', 'ALAYHI AS-SALAAM', 'ALAYHAA AS-SALAAM', 'RADI ALLAAHU ANH', 'RADI ALLAAHU ANHAA', 'RADI ALLAAHU ANHUM', 'RAHIMAHU ALLAAH'];
+            options.forEach(function (option) {
+                var opt = document.createElement('option');
+                opt.textContent = option;
+                select.appendChild(opt);
+            });
+
+
+            // Find the toolbar and append the custom dropdown to it
+            var toolbar = quill.getModule('toolbar').container;
+            toolbar.appendChild(select); // Append the custom dropdown to the end of the toolbar
+
+            // Create a span to contain the text and set its class
+            var textContainer = document.createElement('span');
+            textContainer.textContent = 'Insert';
+            textContainer.classList.add('ql-custom-text');
+
+            // Append the span to the toolbar container
+            toolbar.appendChild(textContainer);
+
+
+            // Add event listener for the custom dropdown
+            select.addEventListener('change', function () {
+                var value = this.value;
+
+                // Implement your custom behavior here based on the selected value
+                // For example, you could format the selected text or insert content
+                switch (value) {
+                    case 'SALLALLAHU ALAIHIWASALLAM':
+                        honorific = 'ﷺ';
+                        // Do something specific for this option
+                        break;
+                    case 'JALLAJALALOUHOU':
+                        honorific = 'ﷻ';
+                        // Do something specific for this option
+                        break;
+                    case 'SUBHAANAHU WA TAAALAA':
+                        honorific = '﷾';
+                        // Do something specific for this option
+                        break;
+                    case 'AZZA WA JALL':
+                        honorific = '﷿';
+                        // Do something specific for this option
+                        break;
+                    case 'TABAARAKA WA-TAAALAA':
+                        honorific = '﵎';
+                        // Do something specific for this option
+                        break;
+                    case 'ALAYHI AS-SALAAM':
+                        honorific = '﵇';
+                        // Do something specific for this option
+                        break;
+                    case 'ALAYHAA AS-SALAAM':
+                        honorific = '﵍';
+                        // Do something specific for this option
+                        break;
+                    case 'RADI ALLAAHU ANH':
+                        honorific = '﵁';
+                        // Do something specific for this option
+                        break;
+                    case 'RADI ALLAAHU ANHAA':
+                        honorific = '﵂';
+                        // Do something specific for this option
+                        break;
+                    case 'RADI ALLAAHU ANHUM':
+                        honorific = '﵃';
+                        // Do something specific for this option
+                        break;
+                    case 'RAHIMAHU ALLAAH':
+                        honorific = '﵀';
+                        // Do something specific for this option
+                        break;
+                    default:
+                        // Handle default case
+                        break;
+                }
+
+            });
+
+            textContainer.addEventListener('click', function () {
+
+                // Implement your custom behavior here when the text is clicked
+                insertTextAtCursor(honorific);
+
+            });
+            // Add handler to the font dropdown
+
+            quill.getModule('toolbar').addHandler('font', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length === 0) {
+
+                    formats.font = value;
+                }
+                quill.format('font', value);
+
+            });
+
+            quill.getModule('toolbar').addHandler('size', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length === 0) {
+                    formats.size = value;
+                }
+                quill.format('size', value);
+            });
+
+
+            quill.getModule('toolbar').addHandler('bold', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length > 0) {
+
+                    var smformats = quill.getFormat(range.index, range.length);
+                    var font = smformats.font;
+                    if (font === undefined && range.index > 0) {
+
+                        quill.formatText(range.index, range.length, 'bold', value);
+                        quill.formatText(range.index, range.length, 'font', formats.font);
+                    } else {
+                        quill.formatText(range.index, range.length, 'bold', value);
+                        quill.formatText(range.index, range.length, 'font', font);
+                    }
+
+                } else {
+                    quill.format('bold', value);
+                }
+            });
+
+            quill.getModule('toolbar').addHandler('italic', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length > 0) {
+
+                    var smformats = quill.getFormat(range.index, range.length);
+                    var font = smformats.font;
+                    if (font === undefined && range.index > 0) {
+
+                        quill.formatText(range.index, range.length, 'italic', value);
+                        quill.formatText(range.index, range.length, 'font', formats.font);
+                    } else {
+                        quill.formatText(range.index, range.length, 'italic', value);
+                        quill.formatText(range.index, range.length, 'font', font);
+                    }
+
+                } else {
+                    quill.format('italic', value);
+                }
+            });
+
+            quill.getModule('toolbar').addHandler('underline', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length > 0) {
+
+                    var smformats = quill.getFormat(range.index, range.length);
+                    var font = smformats.font;
+                    if (font === undefined && range.index > 0) {
+
+                        quill.formatText(range.index, range.length, 'underline', value);
+                        quill.formatText(range.index, range.length, 'font', formats.font);
+                    } else {
+                        quill.formatText(range.index, range.length, 'underline', value);
+                        quill.formatText(range.index, range.length, 'font', font);
+                    }
+
+                } else {
+                    quill.format('underline', value);
+                }
+            });
+
+            quill.getModule('toolbar').addHandler('strike', function (value) {
+
+                const range = quill.getSelection();
+                if (range && range.length > 0) {
+
+                    var smformats = quill.getFormat(range.index, range.length);
+                    var font = smformats.font;
+                    if (font === undefined && range.index > 0) {
+
+                        quill.formatText(range.index, range.length, 'strike', value);
+                        quill.formatText(range.index, range.length, 'font', formats.font);
+                    } else {
+                        quill.formatText(range.index, range.length, 'strike', value);
+                        quill.formatText(range.index, range.length, 'font', font);
+                    }
+
+                } else {
+                    quill.format('strike', value);
+                }
+            });
+
+
+            quill.on('text-change', (delta, oldDelta, source) => {
+                const range = quill.getSelection();
+
+                if (range && range.length === 0) {
+                    let [line, offset] = quill.getLine(range.index);
+                    var smformats = quill.getFormat(range.index - 1, 1);
+
+                    if (smformats.font === undefined && offset === 1) {
+
+                       quill.formatText(range.index - 1, 1, 'font', formats.font);
+                       quill.formatText(range.index - 1, 1, 'size', formats.size);
+                    }
+                }
+            });
+            // Set the CSS style for the Quill container
+            var quillContainer = document.getElementById('editor');
+            quillContainer.style.textUnderlinePosition = 'under';
+
+            // Set the CSS style for the Quill editor
+            var quillEditor = document.querySelector('#editor .ql-editor');
+            quillEditor.style.textUnderlinePosition = 'under';
+
+            window.quill = quill;
+            window.formats = formats;
+            window.honorific = honorific;
+        }
+
+        window.InitializeQuill = InitializeQuill;
+    </script>
+
+    <noscript>
+        <p>This application requires Javascript and WebAssembly to be enabled.</p>
+    </noscript>
+</body>
+</html>
