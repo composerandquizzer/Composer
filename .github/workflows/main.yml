@@ -21,7 +21,7 @@ jobs:
     - name: Restore Dependencies
       run: dotnet restore ./Composer/Composer.csproj
     - name: Build 
-      run: dotnet build ./Composer/Composer.csproj --no-restore -f $framework -c $config -p:WasmShellWebAppBasePath=./
+      run: dotnet build ./Composer/Composer.csproj --no-restore -f $framework -c $config
     - name: Publish Artifacts
       uses: actions/upload-artifact@v4
       if: github.event_name == 'workflow_dispatch' # Only deploy if Workflow manually ran
